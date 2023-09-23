@@ -2,33 +2,61 @@
 // передані аргументи та вирішує який клас повинен мати об’єкт при створенні
 // Клас Book описує книгу в магазині
 class Book {
-  /**
-   * Конструктор Book приймає об'єкт з параметрами
-   * title - назва книги
-   * author - автор книги
-   * coverColor - колір обкладинки книги
-   */
-  /**
-   * Метод describe генерує опис книги
-   *  Повертає рядок у форматі: "Книга: '{назва}', автор: '{автор}', колір обкладинки: '{колір}'"
-   */
+  constructor(title, author, coverColor) {
+    this.title = title;
+    this.author = author;
+    this.coverColor = coverColor;
+  }
+  static create = (options) => {
+    let { title, author, coverColor } = options;
+
+    return new Book(title, author, coverColor);
+  };
+
+  describe = () => {
+    return `Книга: ${this.title}, автор: ${this.author}, колір обкладинки:${this.coverColor}`;
+  };
 }
+/**
+ * Конструктор Book приймає об'єкт з параметрами
+ * title - назва книги
+ * author - автор книги
+ * coverColor - колір обкладинки книги
+ */
+/**
+ * Метод describe генерує опис книги
+ *  Повертає рядок у форматі: "Книга: '{назва}', автор: '{автор}', колір обкладинки: '{колір}'"
+ */
 
 /**
  * Клас AudioBook описує аудіокнигу в магазині
  */
 class AudioBook {
-  /**
-   * Конструктор AudioBook приймає об'єкт з параметрами
-   * title - назва книги
-   * author - автор книги
-   * audioLength - тривалість аудіокниги
-   */
-  /**
+  constructor(title, author, audioLength) {
+    this.title = title;
+    this.author = author;
+    this.audioLength = audioLength;
+  }
+
+  static create = (options) => {
+    let { title, author, audioLength } = options;
+    return new AudioBook(title, author, audioLength);
+  };
+
+  describe = () => {
+    return `Аудіокнига: ${this.title}, автор: ${this.author}, тривалість:${this.audioLength}`;
+  };
+}
+/**
+ * Конструктор AudioBook приймає об'єкт з параметрами
+ * title - назва книги
+ * author - автор книги
+ * audioLength - тривалість аудіокниги
+ */
+/**
      * Метод describe генерує опис аудіокниги
        Повертає рядок у форматі: "Аудіокнига: '{назва}', автор: '{автор}', тривалість: '{тривалість}'"
      */
-}
 
 /**
  * Клас ProductFactory використовується для створення об'єктів-продуктів.
@@ -36,10 +64,21 @@ class AudioBook {
 
 class ProductFactory {
   // TYPE - статична властивість, що визначає типи продуктів, які можуть бути створені.
-  // {
-  //   BOOK: "book",
-  //   AUDIOBOOK: "audiobook",
-  // }
+  static TYPE = {
+    BOOK: "book",
+    AUDIOBOOK: "audiobook",
+  };
+  static createProduct = (type, options) => {
+    let res;
+    if (type === this.TYPE.BOOK) {
+      res = Book.create(options);
+    } else if (type === this.TYPE.AUDIOBOOK) {
+      res = AudioBook.create(options);
+    } else {
+      throw new Error(`Такого типу продукту не існує: ${type}`);
+    }
+    return res;
+  };
   /**
    * Статичний метод createProduct використовується для створення об'єктів-продуктів, отримує
    * type - тип продукту, що має бути створений. Має бути одним зі значень властивості TYPE.
@@ -51,35 +90,35 @@ class ProductFactory {
    */
 }
 console.log("Завдання 2 ====================================");
-// Після виконання розкоментуйте код нижче
+//Після виконання розкоментуйте код нижче
 
-// Використовуємо ProductFactory для створення нової книги
-// const factoryBook = ProductFactory.createProduct(ProductFactory.TYPE.BOOK, {
-//   title: "Назва книги",
-//   author: "Автор книги",
-//   coverColor: "Синій",
-// });
+//Використовуємо ProductFactory для створення нової книги
+const factoryBook = ProductFactory.createProduct(ProductFactory.TYPE.BOOK, {
+  title: "Назва книги",
+  author: "Автор книги",
+  coverColor: "Синій",
+});
 
-// Виводимо в консоль опис нової книги
-// console.log(factoryBook.describe());
+//Виводимо в консоль опис нової книги
+console.log(factoryBook.describe());
 
-// Використовуємо ProductFactory для створення нової аудіокниги
-// const factoryAudiobook = ProductFactory.createProduct(
-//   ProductFactory.TYPE.AUDIOBOOK,
-//   {
-//     title: "Назва аудіокниги",
-//     author: "Автор аудіокниги ",
-//     audioLength: "5 годин",
-//   }
-// );
+//Використовуємо ProductFactory для створення нової аудіокниги
+const factoryAudiobook = ProductFactory.createProduct(
+  ProductFactory.TYPE.AUDIOBOOK,
+  {
+    title: "Назва аудіокниги",
+    author: "Автор аудіокниги ",
+    audioLength: "5 годин",
+  }
+);
 
-// Виводимо в консоль опис нової аудіокниги
-// console.log(factoryAudiobook.describe());
+//Виводимо в консоль опис нової аудіокниги
+console.log(factoryAudiobook.describe());
 
-// Спробуємо створити продукт непідтримуваного типу
-// try {
-//   const factoryUnknown = ProductFactory.createProduct("comics", {});
-// } catch (error) {
-//   // Виводимо помилку в консоль
-//   console.error(error.message);
-// }
+//Спробуємо створити продукт непідтримуваного типу
+try {
+  const factoryUnknown = ProductFactory.createProduct("comics", {});
+} catch (error) {
+  // Виводимо помилку в консоль
+  console.error(error.message);
+}
